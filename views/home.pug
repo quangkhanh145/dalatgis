@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>webGIS Đà lạt</title>
+	<meta charset="utf8">
+	<script src="/javascripts/jquery-3.3.1.min.js"></script>
+	<script src="/javascripts/jquery-ui.min.js"></script>
+	<script src="/javascripts/ol.js"></script>
+	<script src="/javascripts/ol-layerswitcher.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.2.61/jspdf.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/jquery-ui.min.css">
+	<link rel="stylesheet" href="/stylesheets/ol.css" type="text/css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/main.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/ol-layerswitcher.css">
+	<link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+</head>
+<body>
+	<header id="header">
+		<div class="inner">
+			<a href="" class="logo">DaLatLIS</a>
+			<nav id="nav" class="noselect">
+				if !auth || auth == null
+					span#login Login
+				else
+					p(class='welcome-user') Xin chào, #{name}
+					a(href='/' style="font-family: 'Roboto', sans-serif;font-weight:100" id='changePassword') Thay&nbsp;đổi&nbsp;mật&nbsp;khẩu
+					a(href='/logout' style='line-height:normal') Logout
+			</nav>
+		</div>
+	</header>
+	<section id="banner">
+		<h1>HỆ THỐNG WEBGIS</h1>
+		<p>Hỗ trợ tra cứu thông tin đất đai tại phường 1 - TP. Đà Lạt</p>
+	</section>
+	<div id="dockContainer">
+		<div id="dockWrapper" class="noselect">
+			<div class="cap left"></div>
+			<ul class="osx-dock">
+				<li class=active>
+					<span>Tra&nbsp;cứu&nbsp;thửa&nbsp;đất</span>
+					<img id="tracuuthuadat" src="/images/cloud-computing.png">
+				</li>
+				<li>
+					<span>Tra&nbsp;cứu&nbsp;giấy&nbsp;chứng&nbsp;nhận</span>
+					<img id="tracuugcn" src="/images/job-search.png">
+				</li>
+				if auth && role==1
+					li
+						span Quản&nbsp;lý&nbsp;chủ&nbsp;đất
+						img(id="qlchudat" src="/images/team.png")
+					li
+						span Quản&nbsp;lý&nbsp;giấy&nbsp;chứng&nbsp;nhận
+						img(id="qlgcn" src="images/files.png")
+					li
+						span Quản&nbsp;lý&nbsp;người&nbsp;dùng
+						img(id="qlnguoidung" src="images/computer.png")
+					li
+						span Quản&nbsp;lý&nbsp;văn&nbsp;bản&nbsp;nhà&nbsp;nước
+						img(id="qlvanban" src="images/archive2.png")
+				<li>
+					<span>Tra&nbsp;cứu&nbsp;văn&nbsp;bản&nbsp;nhà&nbsp;nước</span>
+					<img id="tracuuvanbannhanuoc" src="images/archive.png">
+				</li>
+				<li>
+					<span>Đo&nbsp;độ&nbsp;dài</span>
+					<img id="mesureline" src="/images/protractor.png">
+				</li>
+				<li>
+					<span>Đo&nbsp;diện&nbsp;tích</span>
+					<img id="mesurepolygon" src="images/protractor2.png">
+				</li>
+				<li>
+					<span>Thông&nbsp;tin</span>
+					<img id="info" src="images/info.png">
+				</li>
+			</ul>
+		</div>
+	</div>
+	<section id="map">
+		<div id = "mode" class="mesure-mode noselect" style="display: none;">
+			<div >Đang ở chế độ đo đạc</div>
+			<a href="#" id="closer" class="ol-popup-closer"></a>
+		</div>
+		
+		
+	</section>
+	if !auth
+		div(id='login-panel' title = 'Đăng nhập' style='display: none;')
+			form(action= '/login' class='form-group' method='post')
+				label(for='username' class='control-label') Tên&nbsp;đăng&nbsp;nhập:
+				input(type='text' name='username' class='form-control')
+				label(for='password' class='control-label') Mật&nbsp;khẩu:
+				input(type='password' name='password' class='form-control')
+				input(type='submit' value='Đăng nhập' style='margin-top: 20px;color: black;' class='form-control')
+	if auth
+		div(id='change-pass-panel' title= 'Thay đổi mật khẩu' style='display: none;')
+			form(action= '/changepassword' class='form-group' method='post')
+				label(for='oldpassword' class='control-label') Mật&nbsp;khẩu&nbsp;cũ:
+				input(type='password' name='oldpassword' class='form-control')
+				label(for='newpassword' class='control-label') Mật&nbsp;khẩu&nbsp;mới:
+				input(type='password' name='newpassword' class='form-control')
+				input(type='submit' value='Thay đổi' style='margin-top: 20px;color: black;' class='form-control')
+	<div id="position"></div>
+	<script src="/javascripts/GlobalConst.js"></script>
+	<script src="/javascripts/map.js"></script>
+	<script src="/javascripts/main.js"></script>
+</body>
+</html>

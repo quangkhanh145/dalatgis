@@ -1,0 +1,223 @@
+MAP
+  NAME "normal map"
+  STATUS ON
+  SIZE 800 600
+  EXTENT 12070401 1338567 12072757 1340779
+  UNITS METERS
+  IMAGECOLOR 255 255 255
+  FONTSET "fonts/fonts.list"
+
+  WEB
+    METADATA
+      "wfs_title"           "WFS TP Da Lat"
+      "wfs_onlineresource"  "http://localhost:8081/cgi-bin/mapserv.exe?"
+      "wfs_srs"             "EPSG:3857 EPSG:4326"
+      "wfs_enable_request"  "*"
+      "wms_title"           "WMS TP Da Lat"
+      "wms_onlineresource"  "http://localhost:8081/cgi-bin/mapserv.exe?"
+      "wms_srs"             "EPSG:3857 EPSG:4326"
+      "wms_enable_request"  "*"
+    END
+  END
+
+  PROJECTION
+    "init=epsg:3857"
+  END
+
+  LAYER
+    NAME "thuadat"
+    METADATA
+      "wfs_title"   "Thua dat"
+      "wfs_srs"     "EPSG:3857"
+      "gml_featureid" "gid"
+      "gml_include_items" "all"
+      "wfs_enable_request"  "*"
+    END
+    PROJECTION
+      "init=epsg:3857"
+    END
+    STATUS ON
+    TYPE POLYGON
+    CONNECTIONTYPE POSTGIS
+    CONNECTION "host=localhost port=5432 dbname=kltn_gis user=quangkhanh password= admin"
+    DATA "geom from thuadat"
+
+    CLASS
+      NAME 'thuadat'
+      STYLE
+        COLOR 255 128 128
+        OUTLINECOLOR 96 96 96
+      END
+    END
+  END
+  LAYER
+    NAME "quihoach"
+    METADATA
+      "wms_title"   "Thua dat"
+      "wms_srs"     "EPSG:3857"
+      "wms_enable_request"  "*"
+    END
+    PROJECTION
+      "init=epsg:3857"
+    END
+    STATUS OFF
+    TYPE POLYGON
+    CONNECTIONTYPE POSTGIS
+    CONNECTION "host=localhost port=5432 dbname=kltn_gis user=quangkhanh password= admin"
+    DATA "geom from (select gid, kihieu_qh, geom, maloai from quihoach JOIN loaidat ON quihoach.kihieu_qh=loaidat.maloai) as subquery using unique gid"
+
+    LABELITEM "maloai"
+    CLASSITEM "maloai"
+    CLASS
+      NAME 'MNC'
+      EXPRESSION 'MNC'
+      STYLE
+        COLOR 180 255 255
+      END
+      LABEL
+        COLOR 0 0 0
+        TYPE TRUETYPE
+        FONT arial
+        SIZE 5
+        POSITION AUTO
+        MINDISTANCE 1000
+      END
+    END
+    CLASS
+      NAME 'CAN'
+      EXPRESSION 'CAN'
+      STYLE
+        COLOR 255 80 70
+      END
+      LABEL
+        COLOR 0 0 0
+        TYPE TRUETYPE
+        FONT arial
+        SIZE 5
+        POSITION AUTO
+        MINDISTANCE 1000
+      END
+    END
+    CLASS
+      NAME 'CQP'
+      EXPRESSION 'CQP'
+      STYLE
+        COLOR 255 100 80
+      END
+      LABEL
+        COLOR 0 0 0
+        TYPE TRUETYPE
+        FONT arial
+        SIZE 5
+        POSITION AUTO
+        MINDISTANCE 1000
+      END
+    END
+    CLASS
+      NAME 'DCH'
+      EXPRESSION {DCH,DGD,DKV,DNL,DVH,DYT,TIN,TON}
+      STYLE
+        COLOR 255 170 160
+      END
+      LABEL
+        COLOR 0 0 0
+        TYPE TRUETYPE
+        FONT arial
+        SIZE 5
+        POSITION AUTO
+        MINDISTANCE 1000
+      END
+    END
+    CLASS
+      NAME 'DGT'
+      EXPRESSION 'DGT'
+      STYLE
+        COLOR 255 170 50
+      END
+      LABEL
+        COLOR 0 0 0
+        TYPE TRUETYPE
+        FONT arial
+        SIZE 5
+        POSITION AUTO
+        MINDISTANCE 1000
+      END
+    END
+    CLASS
+      NAME 'DRA'
+      EXPRESSION 'DRA'
+      STYLE
+        COLOR 205 170 205
+      END
+      LABEL
+        COLOR 0 0 0
+        TYPE TRUETYPE
+        FONT arial
+        SIZE 5
+        POSITION AUTO
+        MINDISTANCE 1000
+      END
+    END
+    CLASS
+      NAME 'ODT'
+      EXPRESSION 'ODT'
+      STYLE
+        COLOR 255 160 255
+      END
+      LABEL
+        COLOR 0 0 0
+        TYPE TRUETYPE
+        FONT arial
+        SIZE 5
+        POSITION AUTO
+        MINDISTANCE 1000
+      END
+    END
+    CLASS
+      NAME 'RPT'
+      EXPRESSION 'RPT'
+      STYLE
+        COLOR 190 255 30
+      END
+      LABEL
+        COLOR 0 0 0
+        TYPE TRUETYPE
+        FONT arial
+        SIZE 5
+        POSITION AUTO
+        MINDISTANCE 1000
+      END
+    END
+    CLASS
+      NAME 'SKC'
+      EXPRESSION 'SKC'
+      STYLE
+        COLOR 250 170 160
+      END
+      LABEL
+        COLOR 0 0 0
+        TYPE TRUETYPE
+        FONT arial
+        SIZE 5
+        POSITION AUTO
+        MINDISTANCE 1000
+      END
+    END
+    CLASS
+      NAME 'TSC'
+      EXPRESSION 'TSC'
+      STYLE
+        COLOR 255 160 170
+      END
+      LABEL
+        COLOR 0 0 0
+        TYPE TRUETYPE
+        FONT arial
+        SIZE 5
+        POSITION AUTO
+        MINDISTANCE 1000
+      END
+    END
+  END
+
+END
