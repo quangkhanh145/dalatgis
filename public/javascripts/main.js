@@ -160,6 +160,7 @@ function createRowWithInputButton(textLabel,textButton,id) {
   var button = document.createElement("button");
   button.classList.add("col-md-2");
   button.classList.add("offset-md-1");
+  button.classList.add("form-control");
   button.type = "submit";
   button.id = "btnSearch";
   button.textContent = textButton;
@@ -1780,6 +1781,7 @@ function QuanLyVanBanNhaNuoc() {
 
     var button = document.createElement("button");
     button.classList.add("col-md-2");
+    button.classList.add("form-control");
     button.type = "submit";
     button.id = "btnView";
     button.textContent = 'Xem';
@@ -1993,6 +1995,7 @@ function QuanLyNguoiDung() {
 
     var button = document.createElement("button");
     button.classList.add("col-md-2");
+    button.classList.add("form-control");
     button.type = "submit";
     button.id = "btnSearch";
     button.textContent = 'Tìm';
