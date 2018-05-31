@@ -159,7 +159,6 @@ function createRowWithInputButton(textLabel,textButton,id) {
 
   var button = document.createElement("button");
   button.classList.add("col-md-2");
-  button.classList.add("offset-md-1");
   button.classList.add("ui-button");
   button.classList.add("ui-corner-all");
   button.classList.add("ui-widget");
@@ -167,6 +166,7 @@ function createRowWithInputButton(textLabel,textButton,id) {
   button.id = "btnSearch";
   button.textContent = textButton;
   button.style.height = '40px';
+  button.style.marginLeft = '20px';
 
   row.append(label);
   row.append(input);
