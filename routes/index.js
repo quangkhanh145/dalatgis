@@ -31,8 +31,7 @@ router.get('/thuadat/:gid',function (req,res) {
 	var gid = req.params.gid;
 	var sql = "SELECT shbando,shthua,dtpl,sonha,tenduong,phuong, thanhpho,tinh,loaidat.tenloai " +
 			 "FROM thuadat " +
-			 "LEFT JOIN giaychungnhan ON thuadat.shgiaycn = giaychungnhan.shgiaycn " +
-			 "LEFT JOIN loaidat ON loaidat.maloai = giaychungnhan.mucdichsudung " +
+			 "LEFT JOIN loaidat ON loaidat.maloai = thuadat.mucdichsudung " +
 			 "WHERE gid=$1"
 	db.oneOrNone(sql,gid).then(function(data){
 		res.status(200).jsonp({
@@ -48,8 +47,7 @@ router.get('/thuadat/:soto/:sothua',function (req,res) {
 	var sothua =req.params.sothua;
 	var sql = "SELECT shbando,shthua,dtpl,sonha,tenduong,phuong, thanhpho,tinh,loaidat.tenloai, gid " +
 			 "FROM thuadat " +
-			 "LEFT JOIN giaychungnhan ON thuadat.shgiaycn = giaychungnhan.shgiaycn " +
-			 "LEFT JOIN loaidat ON loaidat.maloai = giaychungnhan.mucdichsudung " +
+			 "LEFT JOIN loaidat ON loaidat.maloai = thuadat.mucdichsudung " +
 			 "WHERE shbando=$1 AND shthua=$2"
 	db.oneOrNone(sql,[soto,sothua]).then(function(data){
 		res.status(200).jsonp({
@@ -132,14 +130,14 @@ router.get('/gcn/get',function(req,res){
 				'FROM (SELECT * FROM chusudung_giaychungnhan cg INNER JOIN (SELECT * FROM chusudung WHERE sogiayto = $1) c ON c.machu = cg.machu) magcn ' +
 				'INNER JOIN giaychungnhan gcn ON gcn.shgiaycn = magcn.shgiaycn ' +
 				'INNER JOIN thuadat td ON td.shgiaycn = magcn.shgiaycn ' +
-				'INNER JOIN loaidat ld ON gcn.mucdichsudung = ld.maloai ';
+				'LEFT JOIN loaidat ld ON td.mucdichsudung = ld.maloai ';
 	} else {
 		sql = 'SELECT magcn.*,td.shthua, td.shbando, td.sonha, td.tenduong, td.phuong, td.thanhpho, td.tinh, td.dtpl, ' +
 				'gcn.ngayki,gcn.coquancap,gcn.chinhly,gcn.dtrieng,gcn.dtchung,ld.tenloai,gcn.thoihansudung,gcn.nguongocsudung ' +
 				'FROM (SELECT * FROM chusudung_giaychungnhan cg INNER JOIN (SELECT * FROM chusudung WHERE sogiayto = $1) c ON c.machu = cg.machu) magcn ' +
 				'INNER JOIN giaychungnhan gcn ON gcn.shgiaycn = magcn.shgiaycn ' +
 				'INNER JOIN thuadat td ON td.shgiaycn = magcn.shgiaycn ' +
-				'INNER JOIN loaidat ld ON gcn.mucdichsudung = ld.maloai ';
+				'LEFT JOIN loaidat ld ON td.mucdichsudung = ld.maloai ';
 	}
 	db.any(sql,cmnd).then(data => {
 		res.status(200).jsonp({
@@ -187,42 +185,45 @@ router.post('/gcn/update',function(req,res,next){
 	var coquancap = req.body.coquancap;
 	var dtrieng = req.body.dtrieng;
 	var dtchung = req.body.dtchung;
-	var mucdich = req.body.mucdich;
 	var thoihan = req.body.thoihan;
 	var nguongoc = req.body.nguongoc;
 	var chudat = req.body.chudat;
 	var thuadat = req.body.thuadat;
+	console.log(chudat);
+	console.log(thuadat);
 	var sql_getChinhLy = "SELECT chinhly FROM giaychungnhan WHERE shgiaycn=$1";
 	db.oneOrNone(sql_getChinhLy,shgiaycn).then(data =>{
 		var chinhly = data.chinhly;
-		var sql_gcn = "UPDATE giaychungnhan SET ngayki=$1,coquancap=$2,dtrieng=$3,dtchung=$4,mucdichsudung=$5,thoihansudung=$6,nguongocsudung=$7,chinhly=$8 WHERE shgiaycn=$9";
-		db.none(sql_gcn,[ngayky,coquancap,dtrieng,dtchung,mucdich,thoihan,nguongoc,chinhly+1,shgiaycn]).catch(error=>{
-			console.log('update chung nhan');
+		var sql_gcn = "UPDATE giaychungnhan SET ngayki=$1,coquancap=$2,dtrieng=$3,dtchung=$4,thoihansudung=$5,nguongocsudung=$6,chinhly=$7 WHERE shgiaycn=$8";
+		console.log('update chung nhan');
+		db.none(sql_gcn,[ngayky,coquancap,dtrieng,dtchung,thoihan,nguongoc,chinhly+1,shgiaycn]).catch(error=>{
 			console.log(error);
 		});
 		var sql_deletechudat = "DELETE FROM chusudung_giaychungnhan WHERE shgiaycn=$1";
-		db.none(sql_deletechudat,shgiaycn).catch(error=>{
-			console.log('delete csd gcn');
+		console.log('delete csd gcn');
+		db.none(sql_deletechudat,shgiaycn).then(()=>{
+			var sql_gcnchudat = "INSERT INTO chusudung_giaychungnhan(machu,shgiaycn) VALUES ($1,$2)";
+			for(var i =0; i < chudat.length; i++) {
+				db.none(sql_gcnchudat,[chudat[i],shgiaycn]).catch(error =>{
+					console.log(error);
+				});
+			}
+		}).catch(error=>{
 			console.log(error);
 		});
 		var sql_deletethuadat = "UPDATE thuadat SET shgiaycn=null WHERE shgiaycn=$1";
-		db.none(sql_deletethuadat,shgiaycn).catch(error=>{
+		db.none(sql_deletethuadat,shgiaycn).then(() =>{
+			var sql_thuadat = "UPDATE thuadat SET shgiaycn=$1 WHERE gid=$2";
+			for(var j =0; j < thuadat.length; j++){
+				console.log(thuadat[j]);
+				db.none(sql_thuadat,[shgiaycn,thuadat[j]]).catch(error =>{
+					console.log(error);
+				})
+			}
+		}).catch(error=>{
 			console.log('update thuadat');
 			console.log(error);
 		});
-		var sql_gcnchudat = "INSERT INTO chusudung_giaychungnhan(machu,shgiaycn) VALUES ($1,$2)";
-		var sql_thuadat = "UPDATE thuadat SET shgiaycn=$1 WHERE gid=$2";
-		for(var i =0; i < chudat.length; i++) {
-			db.none(sql_gcnchudat,[chudat[i],shgiaycn]).catch(error =>{
-				console.log(error);
-			});
-		}
-		for(var j =0; j < thuadat.length; j++){
-			console.log(thuadat[j]);
-			db.none(sql_thuadat,[shgiaycn,thuadat[j]]).catch(error =>{
-				console.log(error);
-			})
-		}
 		res.status(200).jsonp({
 			status: 'success'
 		});
@@ -270,16 +271,15 @@ router.post('/gcn/insert',function(req,res,next){
 	var coquancap = req.body.coquancap;
 	var dtrieng = (req.body.dtrieng)?req.body.dtrieng:0;
 	var dtchung = (req.body.dtchung)?req.body.dtchung:0;
-	var mucdich = req.body.mucdich;
 	var thoihan = (req.body.thoihan)?req.body.thoihan:null;
 	var nguongoc = req.body.nguongoc;
 	var chudat = req.body.chudat;
 	var thuadat = req.body.thuadat;
 
 
-	var sql_insertgcn = "INSERT INTO giaychungnhan(ngayki,coquancap,dtrieng,dtchung,mucdichsudung,thoihansudung,nguongocsudung,chinhly,shgiaycn)"
-						+ " VALUES($1,$2,$3,$4,$5,$6,$7,0,$8) RETURNING shgiaycn";	
-	db.one(sql_insertgcn,[ngayky,coquancap,dtrieng,dtchung,mucdich,thoihan,nguongoc,sogiaycn]).then(data => {
+	var sql_insertgcn = "INSERT INTO giaychungnhan(ngayki,coquancap,dtrieng,dtchung,thoihansudung,nguongocsudung,chinhly,shgiaycn)"
+						+ " VALUES($1,$2,$3,$4,$5,$6,0,$7) RETURNING shgiaycn";	
+	db.one(sql_insertgcn,[ngayky,coquancap,dtrieng,dtchung,thoihan,nguongoc,sogiaycn]).then(data => {
 		if(data.shgiaycn) {
 			var sql_gcnchudat = "INSERT INTO chusudung_giaychungnhan(machu,shgiaycn) VALUES ($1,$2)";
 			var sql_thuadat = "UPDATE thuadat SET shgiaycn=$1 WHERE gid=$2";
