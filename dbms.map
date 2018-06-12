@@ -51,6 +51,28 @@ MAP
     END
   END
   LAYER
+    NAME "ranhgioi"
+    METADATA
+      "wms_title"   "Ranh Gioi"
+      "wms_srs"     "EPSG:3857"
+      "wms_enable_request"  "*"
+    END
+    PROJECTION
+      "init=epsg:3857"
+    END
+    STATUS ON
+    TYPE LINE
+    CONNECTIONTYPE POSTGIS
+    CONNECTION "host=localhost port=5432 dbname=kltn_gis user=quangkhanh password= admin"
+    DATA "geom from ranhgioi"
+    CLASS
+      NAME 'ranhgioi'
+      STYLE
+        COLOR 205 0 0
+      END
+    END
+  END
+  LAYER
     NAME "quihoach"
     METADATA
       "wms_title"   "Thua dat"

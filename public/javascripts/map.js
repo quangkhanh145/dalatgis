@@ -30,6 +30,16 @@ var quihoachSource = new ol.source.TileWMS({
   serverType: 'mapserver',
   crossOrigin: 'Anonymous'
 });
+var ranhgioiSource = new ol.source.TileWMS({
+  url: _premapserv,
+  params: {
+    'LAYERS': 'ranhgioi',
+    'FORMAT': 'image/png',
+    'TILED': true
+  },
+  serverType: 'mapserver',
+  crossOrigin: 'Anonymous'
+});
 var quihoachLayer = new ol.layer.Tile({
   'title' : 'Quy hoạch',
   visible: false,
@@ -47,6 +57,11 @@ var vectorLayer = new ol.layer.Vector({
     })
   })
 });
+var ranhgioiLayer = new ol.layer.Tile({
+  'title': 'Ranh giới phường/xã',
+  visible: true,
+  source: ranhgioiSource
+});
 vectorLayer.on("change:visible",function(){
   selectInteraction.getFeatures().clear();
 });
@@ -61,7 +76,7 @@ var baselayers = new ol.layer.Group({
 });
 var dataLayer = new ol.layer.Group({
   'title' : 'Bản đồ dữ liệu',
-  layers: [quihoachLayer,vectorLayer]
+  layers: [quihoachLayer,vectorLayer,ranhgioiLayer]
 });
 var map = new ol.Map({
   layers: [baselayers,dataLayer],
