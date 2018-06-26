@@ -7971,7 +7971,7 @@ CREATE TABLE taikhoan (
 	chucvu smallint
 );
 
-INSERT INTO taikhoan(username,password,hoten,chucvu) VALUES ('admin','admin','Quang Khánh',1);
+INSERT INTO taikhoan(username,password,hoten,chucvu) VALUES ('admin',md5('admin'),'Quang Khánh',1);
 
 CREATE TABLE vanbannhanuoc (
 	id serial PRIMARY KEY NOT NULL,
