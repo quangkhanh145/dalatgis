@@ -1,6 +1,7 @@
 SET CLIENT_ENCODING TO UTF8;
 SET STANDARD_CONFORMING_STRINGS TO ON;
 BEGIN;
+CREATE EXTENSION IF NOT EXISTS postgis;
 drop table if exists chusudung_giaychungnhan;
 drop table if exists thuadat;
 drop table if exists chusudung;
