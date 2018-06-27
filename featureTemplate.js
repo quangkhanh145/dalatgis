@@ -1,0 +1,2 @@
+//MapServer Template
+{"id": "[gid]"}
