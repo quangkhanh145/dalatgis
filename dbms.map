@@ -17,6 +17,7 @@ MAP
       "wms_onlineresource"  "http://localhost:8081/cgi-bin/mapserv.exe?"
       "wms_srs"             "EPSG:3857 EPSG:4326"
       "wms_enable_request"  "*"
+      "wms_feature_info_mime_type" "text/javascript"
     END
   END
 
@@ -41,7 +42,7 @@ MAP
     CONNECTIONTYPE POSTGIS
     CONNECTION "host=localhost port=5432 dbname=kltn_gis user=quangkhanh password= admin"
     DATA "geom from thuadat"
-
+    TEMPLATE "featureTemplate.js"
     CLASS
       NAME 'thuadat'
       STYLE
@@ -75,7 +76,7 @@ MAP
   LAYER
     NAME "quihoach"
     METADATA
-      "wms_title"   "Thua dat"
+      "wms_title"   "Qui hoach"
       "wms_srs"     "EPSG:3857"
       "wms_enable_request"  "*"
     END
